@@ -54,7 +54,7 @@ class Coin(object):
         self.resultant += force
 
     def apply_friction(self, constant):
-        self.velocity *= constant
+        self.apply_force(-self.velocity * constant)
 
     def update(self):
         self.acceleration = self.resultant / self.mass

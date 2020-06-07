@@ -18,7 +18,7 @@ def main():
     coin1 = physics.Coin(10, 100, 170)
     coin1.velocity = physics.Vector(5, 0)
     coin2 = physics.Coin(15, 300, 150)
-    friction_constant = 0.985
+    friction_constant = 0.15
 
     elastic_constant = 10
 
