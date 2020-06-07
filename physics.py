@@ -68,6 +68,11 @@ class Coin(object):
     def show(self):
         print(f"v: {self.velocity}, \na: {self.acceleration}, \npos: {self.position}\n")
 
+    def __repr__(self):
+        return "Coin(pos=(%.3f, %.3f), size=%d)" % (self.position.x, self.position.y, self.mass)
+
+    __str__ = __repr__
+
 
 def get_elastic(ball1, ball2, constant):
     global collide
@@ -75,7 +80,7 @@ def get_elastic(ball1, ball2, constant):
     elastic = direction.normalize() * (- direction.length + ball2.mass + ball1.mass) * constant
     if - direction.length + ball2.mass + ball1.mass > 0:
         if not collide:
-            print("Collide")
+            print("Collide: %s and %s" % (ball1, ball2))
             collide = True
         return -elastic, elastic
     if collide:
