@@ -24,6 +24,7 @@ def main():
 
     fps_clock = pygame.time.Clock()
     fps = 60
+    time_constant = 60
 
     move = False
 
@@ -48,8 +49,8 @@ def main():
         coin1.apply_friction(friction_constant)
         coin2.apply_friction(friction_constant)
 
-        coin1.update()
-        coin2.update()
+        coin1.update(time_constant / fps)
+        coin2.update(time_constant / fps)
 
         for event in pygame.event.get():
             if event.type == QUIT:

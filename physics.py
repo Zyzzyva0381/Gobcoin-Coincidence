@@ -56,11 +56,11 @@ class Coin(object):
     def apply_friction(self, constant):
         self.apply_force(-self.velocity * constant)
 
-    def update(self):
+    def update(self, time):
         self.acceleration = self.resultant / self.mass
         self.resultant = Vector(0, 0)
-        self.velocity += self.acceleration
-        self.position += self.velocity
+        self.velocity += self.acceleration * time
+        self.position += self.velocity * time
 
     def draw(self, screen):
         pygame.draw.circle(screen, (0, 0, 0), (int(self.position.x), int(self.position.y)), self.mass)
