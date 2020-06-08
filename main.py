@@ -28,8 +28,20 @@ def main():
 
     move = False
 
+    direction = 0
+    direction_original_surf = pygame.transform.scale(pygame.image.load("images/direction.png"), (100, 100))
+    rotation_speed = 5
+    direction_x = 60
+    direction_y = 220
+    left_key_down = False
+    right_key_down = False
+
     while True:
         screen.fill(white)
+        direction_surf = pygame.transform.rotate(direction_original_surf, direction)
+        direction_rect = direction_surf.get_rect()
+        direction_rect.center = (direction_x, direction_y)
+        screen.blit(direction_surf, direction_rect)
         coin1.draw(screen)
         coin2.draw(screen)
         pygame.display.update()
@@ -41,6 +53,11 @@ def main():
         elif not move:
             print("Start\n")
             move = True
+
+        if left_key_down:
+            direction += rotation_speed * time_constant / fps
+        elif right_key_down:
+            direction -= rotation_speed * time_constant / fps
 
         elastic1, elastic2 = physics.get_elastic(coin1, coin2, elastic_constant)
         coin1.apply_force(elastic1)
@@ -55,6 +72,16 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
+            elif event.type == KEYDOWN:
+                if event.key in (K_LEFT, K_a):
+                    left_key_down = True
+                elif event.key in (K_RIGHT, K_d):
+                    right_key_down = True
+            elif event.type == KEYUP:
+                if event.key in (K_LEFT, K_a):
+                    left_key_down = False
+                elif event.key in (K_RIGHT, K_d):
+                    right_key_down = False
 
         fps_clock.tick(fps)
 
