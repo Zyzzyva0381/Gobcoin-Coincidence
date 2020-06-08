@@ -14,10 +14,12 @@ def main():
 
     screen = pygame.display.set_mode((400, 300))
     white = (255, 255, 255)
+    light_blue = (32, 171, 255)
+    pink = (255, 90, 195)
 
-    coin1 = physics.Coin(10, 100, 170)
-    coin1.velocity = physics.Vector(5, 0)
-    coin2 = physics.Coin(15, 300, 150)
+    coin1 = physics.Coin(10, 100, 170, light_blue)
+    coin1.velocity = physics.Vector(6, 0)
+    coin2 = physics.Coin(15, 300, 150, pink)
     friction_constant = 0.15
 
     elastic_constant = 10

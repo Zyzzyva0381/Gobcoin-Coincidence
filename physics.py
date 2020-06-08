@@ -43,12 +43,13 @@ class Vector(object):
 
 
 class Coin(object):
-    def __init__(self, mass, pos_x, pos_y):
+    def __init__(self, mass, pos_x, pos_y, color):
         self.mass = mass
         self.velocity = Vector(0, 0)
         self.acceleration = Vector(0, 0)
         self.resultant = Vector(0, 0)
         self.position = Vector(pos_x, pos_y)
+        self.color = color
 
     def apply_force(self, force):
         self.resultant += force
@@ -63,7 +64,7 @@ class Coin(object):
         self.position += self.velocity * time
 
     def draw(self, screen):
-        pygame.draw.circle(screen, (0, 0, 0), (int(self.position.x), int(self.position.y)), self.mass)
+        pygame.draw.circle(screen, self.color, (int(self.position.x), int(self.position.y)), self.mass)
 
     def show(self):
         print(f"v: {self.velocity}, \na: {self.acceleration}, \npos: {self.position}\n")
