@@ -1,6 +1,7 @@
 import pygame
 import sys
 import physics
+import math
 from pygame.locals import *
 
 
@@ -37,6 +38,7 @@ def main():
     direction_y = 220
     left_key_down = False
     right_key_down = False
+    direction_original_vector = physics.Vector(0, 1)
 
     while True:
         screen.fill(white)
@@ -60,6 +62,8 @@ def main():
             direction += rotation_speed * time_constant / fps
         elif right_key_down:
             direction -= rotation_speed * time_constant / fps
+        direction_radian = direction / 180 * math.pi
+        direction_vector = direction_original_vector.rotate(direction_radian)
 
         elastic1, elastic2 = physics.get_elastic(coin1, coin2, elastic_constant)
         coin1.apply_force(elastic1)
@@ -84,6 +88,8 @@ def main():
                     left_key_down = False
                 elif event.key in (K_RIGHT, K_d):
                     right_key_down = False
+                elif event.key == K_SPACE:
+                    pass
 
         fps_clock.tick(fps)
 

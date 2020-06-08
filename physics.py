@@ -30,6 +30,10 @@ class Vector(object):
     def __repr__(self):
         return "(x: %.3f, y: %.3f, length: %.3f)" % (self.x, self.y, self.length)
 
+    def rotate(self, angle):
+        return Vector(self.x * math.cos(angle) - self.y * math.sin(angle),
+                      self.x * math.sin(angle) + self.y * math.cos(angle))
+
     __str__ = __repr__
 
     @property
