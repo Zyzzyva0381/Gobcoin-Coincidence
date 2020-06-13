@@ -40,6 +40,13 @@ def main():
     right_key_down = False
     direction_original_vector = physics.Vector(0, 1)
 
+    space_down = False
+    finger = 0
+    finger_speed = 24
+    finger_surfs = tuple((pygame.image.load("images/fingers/%d.png" % x) for x in range(0, 8)))
+    finger_rect = finger_surfs[0].get_rect()
+    finger_rect.topleft = (0, 0)
+
     while True:
         screen.fill(white)
         direction_surf = pygame.transform.rotate(direction_original_surf, direction)
@@ -48,6 +55,7 @@ def main():
         screen.blit(direction_surf, direction_rect)
         coin1.draw(screen)
         coin2.draw(screen)
+        screen.blit(finger_surfs[int(finger)], finger_rect)
         pygame.display.update()
 
         if coin1.velocity.length < 0.01 and coin2.velocity.length < 0.01:
@@ -75,6 +83,13 @@ def main():
         coin1.update(time_constant / fps)
         coin2.update(time_constant / fps)
 
+        if space_down:
+            finger += finger_speed / fps
+            if finger >= 7:
+                finger = 0
+        else:
+            finger = 0
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
@@ -83,13 +98,16 @@ def main():
                     left_key_down = True
                 elif event.key in (K_RIGHT, K_d):
                     right_key_down = True
+                elif event.key == K_SPACE:
+                    space_down = True
+
             elif event.type == KEYUP:
                 if event.key in (K_LEFT, K_a):
                     left_key_down = False
                 elif event.key in (K_RIGHT, K_d):
                     right_key_down = False
                 elif event.key == K_SPACE:
-                    pass
+                    space_down = False
 
         fps_clock.tick(fps)
 
