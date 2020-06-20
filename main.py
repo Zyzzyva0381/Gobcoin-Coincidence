@@ -5,6 +5,15 @@ import math
 from pygame.locals import *
 
 
+class Turn(object):
+    def __init__(self):
+        self.turn = 1
+        self._map = {1: 2, 2: 1}
+
+    def next(self):
+        self.turn = self._map[self.turn]
+
+
 def terminate():
     pygame.quit()
     sys.exit()
@@ -19,7 +28,6 @@ def main():
     pink = (255, 90, 195)
 
     coin1 = physics.Coin(10, 100, 170, light_blue)
-    coin1.velocity = physics.Vector(6, 0)
     coin2 = physics.Coin(15, 300, 150, pink)
     friction_constant = 0.15
 
@@ -46,6 +54,10 @@ def main():
     finger_surfs = tuple((pygame.image.load("images/fingers/%d.png" % x) for x in range(0, 8)))
     finger_rect = finger_surfs[0].get_rect()
     finger_rect.topleft = (0, 0)
+    initial_speed_constant = 10
+    fire = False
+
+    turn = Turn()
 
     while True:
         screen.fill(white)
@@ -53,42 +65,10 @@ def main():
         direction_rect = direction_surf.get_rect()
         direction_rect.center = (direction_x, direction_y)
         screen.blit(direction_surf, direction_rect)
+        screen.blit(finger_surfs[int(finger)], finger_rect)
         coin1.draw(screen)
         coin2.draw(screen)
-        screen.blit(finger_surfs[int(finger)], finger_rect)
         pygame.display.update()
-
-        if coin1.velocity.length < 0.01 and coin2.velocity.length < 0.01:
-            if move:
-                print("Stop\n")
-                move = False
-        elif not move:
-            print("Start\n")
-            move = True
-
-        if left_key_down:
-            direction += rotation_speed * time_constant / fps
-        elif right_key_down:
-            direction -= rotation_speed * time_constant / fps
-        direction_radian = direction / 180 * math.pi
-        direction_vector = direction_original_vector.rotate(direction_radian)
-
-        elastic1, elastic2 = physics.get_elastic(coin1, coin2, elastic_constant)
-        coin1.apply_force(elastic1)
-        coin2.apply_force(elastic2)
-
-        coin1.apply_friction(friction_constant)
-        coin2.apply_friction(friction_constant)
-
-        coin1.update(time_constant / fps)
-        coin2.update(time_constant / fps)
-
-        if space_down:
-            finger += finger_speed / fps
-            if finger >= 7:
-                finger = 0
-        else:
-            finger = 0
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -108,6 +88,47 @@ def main():
                     right_key_down = False
                 elif event.key == K_SPACE:
                     space_down = False
+                    fire = True
+
+        if coin1.velocity.length < 0.01 and coin2.velocity.length < 0.01:
+            if move:
+                print("Stop\n")
+                turn.next()
+                move = False
+        elif not move:
+            print("Start\n")
+            move = True
+
+        if left_key_down:
+            direction += rotation_speed * time_constant / fps
+        elif right_key_down:
+            direction -= rotation_speed * time_constant / fps
+        direction_radian = direction / 180 * math.pi
+        direction_vector = direction_original_vector.rotate(direction_radian)
+        screen_direction_vector = physics.Vector(direction_vector.x, -direction_vector.y)
+
+        elastic1, elastic2 = physics.get_elastic(coin1, coin2, elastic_constant)
+        coin1.apply_force(elastic1)
+        coin2.apply_force(elastic2)
+
+        coin1.apply_friction(friction_constant)
+        coin2.apply_friction(friction_constant)
+
+        coin1.update(time_constant / fps)
+        coin2.update(time_constant / fps)
+
+        if space_down:
+            finger += finger_speed / fps
+            if finger >= 7:
+                finger = 0
+        else:
+            finger = 0
+
+        if fire and not move:
+            if turn.turn == 1:
+                coin1.velocity = screen_direction_vector * finger * initial_speed_constant
+            elif turn.turn == 2:
+                coin2.velocity = screen_direction_vector * finger * initial_speed_constant
 
         fps_clock.tick(fps)
 
