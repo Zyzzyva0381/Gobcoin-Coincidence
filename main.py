@@ -22,7 +22,10 @@ def terminate():
 def main():
     pygame.init()
 
-    screen = pygame.display.set_mode((400, 300))
+    window_width = 400
+    window_height = 300
+    screen = pygame.display.set_mode((window_width, window_height))
+    pygame.display.set_caption("Gobcoin-Coincidence - By Zyzzyva038")
     white = (255, 255, 255)
     light_blue = (32, 171, 255)
     pink = (255, 90, 195)
@@ -60,6 +63,7 @@ def main():
     turn = Turn()
 
     while True:
+        # draw screen
         screen.fill(white)
         direction_surf = pygame.transform.rotate(direction_original_surf, direction)
         direction_rect = direction_surf.get_rect()
@@ -70,6 +74,7 @@ def main():
         coin2.draw(screen)
         pygame.display.update()
 
+        # get events
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
@@ -90,6 +95,7 @@ def main():
                     space_down = False
                     fire = True
 
+        # update game state
         if coin1.velocity.length < 0.01 and coin2.velocity.length < 0.01:
             if move:
                 print("Stop\n")
@@ -130,8 +136,18 @@ def main():
             elif turn.turn == 2:
                 coin2.velocity = screen_direction_vector * finger * initial_speed_constant
 
+        if (coin1.position.x <= - coin1.mass or coin1.position.x >= window_width + coin1.mass or
+                coin1.position.y <= - coin1.mass or coin1.position.y >= window_height + coin1.mass):
+            win_state = 2
+            return win_state
+        elif (coin2.position.x <= - coin2.mass or coin2.position.x >= window_width + coin1.mass or
+                coin2.position.y <= - coin2.mass or coin2.position.y >= window_height + coin1.mass):
+            win_state = 1
+            return win_state
+
+        # tick FPS
         fps_clock.tick(fps)
 
 
 if __name__ == "__main__":
-    main()
+    print(main())
